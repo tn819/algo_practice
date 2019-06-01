@@ -52,35 +52,59 @@ function maxSubarraySum(arr, segment) {
     return maxSum;
 }
 
+//check minimum length of a subarray that exceeds a provided integer value
+function minSubArrayLen(nums, sum) {
+    let total = 0;
+    let start = 0;
+    let end = 0;
+    let minLen = Infinity;
 
-function minSubArrayLen(arr, int){
-    let tempSum = 0;
-    let segStart = 0;
-    let segEnd = 0;
-    let shortestSeg;
-    
-    if(arr.length < 1){
-        return 0;
-    }
-    
-    while(segEnd < arr.length){
-        tempSum += arr[segStart];
-        if (tempSum > int ){
-            if (!shortestSeg || segEnd - segStart + 1 < shortestSeg){
-                shortestSeg = segEnd - segStart + 1;
-            } else if(tempSum - arr[segStart] >= int) {
-                tempSum -= arr[segStart];
-                segStart++;
-                
-            } else if (tempSum - arr[segStart] <= int) {
-                segEnd ++;
-                tempSum += arr[segEnd];
-            }
-        } else {
-            segEnd ++;
-            tempSum += arr[segEnd];
+    while (start < nums.length) {
+        // if current window doesn't add up to the given sum then
+        // move the window to right
+        if (total < sum && end < nums.length) {
+            total += nums[end];
+            end++;
+        }
+        // if current window adds up to at least the sum given then
+        // we can shrink the window
+        else if (total >= sum) {
+            minLen = Math.min(minLen, end - start);
+            total -= nums[start];
+            start++;
+        }
+        // current total less than required total but we reach the end, need this or else we'll be in an infinite loop
+        else {
+            break;
         }
     }
-    
-    return shortestSeg || 0;
+
+    return minLen === Infinity ? 0 : minLen;
+}
+
+//check longest string
+
+function findLongestSubstring(string) {
+    if (string.length === 0) {
+        return 0;
+    } else if (string.length === 1) {
+        return 1;
+    }
+    let resultArray = [];
+    let resultLength = 0;
+    let firstPointer = 0;
+    let secondPointer = 1;
+    while (secondPointer <= string.length) {
+        resultArray = string.split("").slice(firstPointer, secondPointer);
+        resultArray.length > resultLength
+            ? (resultLength = resultArray.length)
+            : null;
+        if (resultArray.indexOf(string[secondPointer]) == -1) {
+            secondPointer++;
+        } else {
+            firstPointer += resultArray.indexOf(string[secondPointer]) + 1;
+            secondPointer++;
+        }
+    }
+    return resultLength;
 }
